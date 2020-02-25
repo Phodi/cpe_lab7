@@ -3,6 +3,7 @@ import firebase from "../firebase/firebase";
 import Navbar from "./Navbar";
 import MessageList from "./MessageList";
 import "bulma/css/bulma.css";
+import logo from '../logo.svg';
 
 class Login extends Component {
   constructor(props) {
@@ -37,6 +38,7 @@ class Login extends Component {
           });
       }
     });
+    this.setState({image: logo})
   }
 
   onChange = e => {
