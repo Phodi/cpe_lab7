@@ -12,8 +12,9 @@ class Login extends Component {
       email: "",
       password: "",
       message: "",
-      messages: null,
-      image: null,
+      messages: [],
+      image: "",
+      comment: "",
       currentUser: null
     };
   }
@@ -24,6 +25,16 @@ class Login extends Component {
         this.setState({
           currentUser: user
         });
+        firebase
+          .firestore()
+          .collection("users")
+          .doc(user.email)
+          .collection("messages")
+          .onSnapshot(item => {
+            this.setState({
+              messages: item
+            });
+          });
       }
     });
   }
@@ -80,13 +91,13 @@ class Login extends Component {
 
   delete = e => {
     firebase
-    .firestore()
-    .collection("users")
-    .doc(this.state.currentUser.email)
-    .collection("messages")
-    .doc(e.target.value)
-    .delete()
-  }
+      .firestore()
+      .collection("users")
+      .doc(this.state.currentUser.email)
+      .collection("messages")
+      .doc(e.target.value)
+      .delete();
+  };
 
   render() {
     if (this.state.currentUser) {
@@ -96,6 +107,7 @@ class Login extends Component {
             username={this.state.currentUser.email}
             logout={this.logout}
           />
+          {/* <Comment image=""/> */}
           <MessageList
             image={this.state.image}
             messages={this.state.messages}
