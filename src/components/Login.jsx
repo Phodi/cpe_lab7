@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import firebase from "../firebase/firebase";
 import Navbar from "./Navbar";
+import MessageList from "./MessageList";
 import "bulma/css/bulma.css";
 
 class Login extends Component {
@@ -11,8 +12,20 @@ class Login extends Component {
       email: "",
       password: "",
       message: "",
+      messages: null,
+      image: null,
       currentUser: null
     };
+  }
+
+  componentDidMount() {
+    firebase.auth().onAuthStateChanged(user => {
+      if (user) {
+        this.setState({
+          currentUser: user
+        });
+      }
+    });
   }
 
   onChange = e => {
@@ -53,10 +66,44 @@ class Login extends Component {
       });
   };
 
+  post = e => {
+    firebase
+      .firestore()
+      .collection("users")
+      .doc(this.state.currentUser.email)
+      .collection("messages")
+      .add({
+        text: this.state.comment,
+        timestamp: new Date()
+      });
+  };
+
+  delete = e => {
+    firebase
+    .firestore()
+    .collection("users")
+    .doc(this.state.currentUser.email)
+    .collection("messages")
+    .doc(e.target.value)
+    .delete()
+  }
+
   render() {
     if (this.state.currentUser) {
       return (
-        <Navbar username={this.state.currentUser.email} logout={this.logout} />
+        <div>
+          <Navbar
+            username={this.state.currentUser.email}
+            logout={this.logout}
+          />
+          <MessageList
+            image={this.state.image}
+            messages={this.state.messages}
+            onChange={this.onChange}
+            post={this.post}
+            delete={this.delete}
+          />
+        </div>
       );
     } else {
       return (
@@ -85,7 +132,9 @@ class Login extends Component {
                       onChange={this.onChange}
                     />
                   </div>
-                  {this.state.message ? (<p className="help is-danger">{this.state.message}</p>) : null}
+                  {this.state.message ? (
+                    <p className="help is-danger">{this.state.message}</p>
+                  ) : null}
                 </div>
                 <div className="field is-grouped">
                   <div className="control">
