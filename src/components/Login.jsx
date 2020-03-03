@@ -36,9 +36,16 @@ class Login extends Component {
               messages: item
             });
           });
+        firebase.storage()
+        .ref('conan.jpg')
+        .getDownloadURL()
+        .then(response => {
+          this.setState({image: response})
+        })
       }
     });
-    this.setState({image: logo})
+    // this.setState({image: logo})
+    // this.setState({image: 'https://firebasestorage.googleapis.com/v0/b/cpe-lab7-auth.appspot.com/o/conan.jpg?alt=media&token=3106bda9-1712-4333-b9da-340bbffdbed2'})
   }
 
   onChange = e => {
@@ -109,7 +116,6 @@ class Login extends Component {
             username={this.state.currentUser.email}
             logout={this.logout}
           />
-          {/* <Comment image=""/> */}
           <MessageList
             image={this.state.image}
             messages={this.state.messages}

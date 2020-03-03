@@ -17,6 +17,9 @@ function Navbar(props) {
               <button className="button is-light" onClick={props.logout}>
                 Logout
               </button>
+              <button className="button is-light" onClick={() => {console.log('test')}}>
+                Test
+              </button>
             </div>
           </div>
         </div>
